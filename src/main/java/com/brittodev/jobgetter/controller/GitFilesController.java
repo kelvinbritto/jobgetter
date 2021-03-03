@@ -29,7 +29,9 @@ public class GitFilesController {
 	
 		try {
 			repositoryFiles = repository.getRepository(url);
+			
 		} catch (Exception e) {
+			System.out.println(e);
 			System.out.println("BAD.REQUEST -> " + url);
 			return ResponseEntity.badRequest().build();
 		}

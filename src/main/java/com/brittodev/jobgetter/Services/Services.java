@@ -11,6 +11,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import ch.qos.logback.core.recovery.ResilientSyslogOutputStream;
+
 
 //This class has all communications with GitHub`s platafform
 public class Services {
@@ -65,8 +67,8 @@ public class Services {
 			
 			try {
 			    //Time to wait GibHub's error (429 Too many requests)
-				TimeUnit.SECONDS.sleep(30);
 				System.out.println("Waiting 30 Seconds");
+				TimeUnit.SECONDS.sleep(30);
 			} catch (InterruptedException ie) {
 			    Thread.currentThread().interrupt();
 			}
@@ -97,6 +99,7 @@ public class Services {
 
 		Document doc = Jsoup.connect(urlArquivo).get();
 		
+		System.out.println((urlArquivo));
 
 		Elements newsHeadlines = doc
 				.select("div.text-mono.f6.flex-auto.pr-3.flex-order-2.flex-md-order-1.mt-2.mt-md-0");
