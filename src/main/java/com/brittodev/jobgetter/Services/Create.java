@@ -30,11 +30,9 @@ public class Create {
 			tamanhoArquivos = new ArrayList<String>();
 
 			List<String> filesUrl = (serv.findFilesPage(urlLinguagem, serv.getNumberOfPages(urlLinguagem), 1));
+			Object[] sizeAndLines = null;
 
 			for (String file : filesUrl) {
-				
-				Object[] sizeAndLines = null;
-				
 				try {
 					sizeAndLines = serv.getFileSizeAndLinesOfCode(file);					
 				}catch (Exception e) {
@@ -50,7 +48,11 @@ public class Create {
 				
 				tamanhoLinhas.add((Integer) sizeAndLines[0]);
 				tamanhoArquivos.add((String) sizeAndLines[1]);
+				
+				filesUrl.remove(file);
+				
 			}
+			
 			Language linguagem = new Language();
 			// Get Language Name Extension
 			String[] file = filesUrl.get(0).split("/");
