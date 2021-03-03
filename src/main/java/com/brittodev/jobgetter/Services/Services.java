@@ -94,18 +94,18 @@ public class Services {
 	// return Object[] with lines and fileSize
 	public Object[] getFileSizeAndLinesOfCode(String urlArquivo) {
 
+		System.out.println(urlArquivo);
+
+		Integer numeroDeLinhas = 0;
+		String tamanho = null;
+		String linhasEKb = null;
+		Object[] array = { numeroDeLinhas, tamanho };
+
 		try {
 			Document doc = Jsoup.connect(urlArquivo).get();
 
 			Elements newsHeadlines = doc
 					.select("div.text-mono.f6.flex-auto.pr-3.flex-order-2.flex-md-order-1.mt-2.mt-md-0");
-
-			String linhasEKb = null;
-
-			Integer numeroDeLinhas = 0;
-			String tamanho = null;
-
-			Object[] array = { numeroDeLinhas, tamanho };
 
 			for (Element headline : newsHeadlines) {
 				linhasEKb = headline.ownText();
@@ -132,9 +132,9 @@ public class Services {
 			}
 
 			getFileSizeAndLinesOfCode(urlArquivo);
-		}
 
-		return null;
+		}
+		return array;
 	}
 
 	// Sum file List<String> in Kb
