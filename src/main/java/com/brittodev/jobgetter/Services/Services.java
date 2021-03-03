@@ -11,8 +11,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import ch.qos.logback.core.recovery.ResilientSyslogOutputStream;
-
 //This class has all communications with GitHub`s platafform
 public class Services {
 
@@ -109,7 +107,7 @@ public class Services {
 	}
 
 	// return Object[] with lines and fileSize
-	public Object[] getFileSizeAndLinesOfCode(String urlArquivo) {
+	public Object[] getFileSizeAndLinesOfCode(String urlArquivo) throws IOException {
 
 		System.out.println(urlArquivo);
 
@@ -118,42 +116,23 @@ public class Services {
 		String linhasEKb = null;
 		Object[] array = { numeroDeLinhas, tamanho };
 
-		try {
-			Document doc = Jsoup.connect(urlArquivo).get();
+		Document doc = Jsoup.connect(urlArquivo).get();
 
-			Elements newsHeadlines = doc
-					.select("div.text-mono.f6.flex-auto.pr-3.flex-order-2.flex-md-order-1.mt-2.mt-md-0");
+		Elements newsHeadlines = doc
+				.select("div.text-mono.f6.flex-auto.pr-3.flex-order-2.flex-md-order-1.mt-2.mt-md-0");
 
-			for (Element headline : newsHeadlines) {
-				linhasEKb = headline.ownText();
-			}
-
-			String[] nova1 = linhasEKb.split(" ");
-			String[] nova2 = linhasEKb.split("sloc");
-
-			numeroDeLinhas = Integer.parseInt(nova1[0]);
-			tamanho = nova2[1].substring(2);
-
-			array[0] = numeroDeLinhas;
-			array[1] = tamanho;
-
-			return array;
-		} catch (Exception e) {
-
-			try {
-
-				// Time to wait GibHub's error (429 Too many requests)
-				System.out.println("Waiting 30 Seconds");
-				TimeUnit.SECONDS.sleep(30);
-
-			} catch (InterruptedException ie) {
-
-				Thread.currentThread().interrupt();
-
-			}
-
-			getFileSizeAndLinesOfCode(urlArquivo);
+		for (Element headline : newsHeadlines) {
+			linhasEKb = headline.ownText();
 		}
+
+		String[] nova1 = linhasEKb.split(" ");
+		String[] nova2 = linhasEKb.split("sloc");
+
+		numeroDeLinhas = Integer.parseInt(nova1[0]);
+		tamanho = nova2[1].substring(2);
+
+		array[0] = numeroDeLinhas;
+		array[1] = tamanho;
 
 		return array;
 	}

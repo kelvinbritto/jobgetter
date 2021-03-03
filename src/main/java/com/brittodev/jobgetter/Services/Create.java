@@ -3,6 +3,7 @@ package com.brittodev.jobgetter.Services;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import com.brittodev.jobgetter.model.Language;
 import com.brittodev.jobgetter.model.RepositoryFiles;
@@ -31,7 +32,22 @@ public class Create {
 			List<String> filesUrl = (serv.findFilesPage(urlLinguagem, serv.getNumberOfPages(urlLinguagem), 1));
 
 			for (String file : filesUrl) {
-				Object[] sizeAndLines = serv.getFileSizeAndLinesOfCode(file);
+				
+				Object[] sizeAndLines = null;
+				
+				try {
+					sizeAndLines = serv.getFileSizeAndLinesOfCode(file);					
+				}catch (Exception e) {
+					try {
+						// Time to wait GibHub's error (429 Too many requests)
+						System.out.println("Waiting 30 Seconds");
+						TimeUnit.SECONDS.sleep(30);
+					} catch (InterruptedException ie) {
+						Thread.currentThread().interrupt();
+					}
+					sizeAndLines = serv.getFileSizeAndLinesOfCode(file);
+				}
+				
 				tamanhoLinhas.add((Integer) sizeAndLines[0]);
 				tamanhoArquivos.add((String) sizeAndLines[1]);
 			}
