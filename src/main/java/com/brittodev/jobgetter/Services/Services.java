@@ -13,11 +13,10 @@ import org.jsoup.select.Elements;
 
 import ch.qos.logback.core.recovery.ResilientSyslogOutputStream;
 
-
 //This class has all communications with GitHub`s platafform
 public class Services {
 
-	//Search and find Urls with languages filter
+	// Search and find Urls with languages filter
 	public List<String> getUrlsLinguagens(String urlRepository) {
 
 		Document doc = null;
@@ -39,14 +38,13 @@ public class Services {
 
 	}
 
-	//Method to find files URL on the page
+	// Method to find files URL on the page
 	public List<String> findFilesPage(String url, Integer numeroDePaginas, Integer n) throws IOException {
-		
+
 		List<String> array = new ArrayList<String>();
 
 		try {
-			
-			
+
 			while (n <= numeroDePaginas) {
 				Document doc = Jsoup.connect(url + "&p=" + n).get();
 
@@ -57,29 +55,28 @@ public class Services {
 					array.add("https://github.com" + headline.select("a").attr("href"));
 					System.out.println("https://github.com" + headline.select("a").attr("href"));
 				}
-				
+
 				System.out.println("Pagina" + n);
 
 				n++;
 			}
-			
+
 		} catch (Exception e) {
-			
+
 			try {
-			    //Time to wait GibHub's error (429 Too many requests)
+				// Time to wait GibHub's error (429 Too many requests)
 				System.out.println("Waiting 30 Seconds");
 				TimeUnit.SECONDS.sleep(30);
 			} catch (InterruptedException ie) {
-			    Thread.currentThread().interrupt();
+				Thread.currentThread().interrupt();
 			}
-			
-			findFilesPage(url, numeroDePaginas, n);			
+
+			findFilesPage(url, numeroDePaginas, n);
 		}
 		return array;
 	}
-	
 
-	//Get how many pages has on the language filter
+	// Get how many pages has on the language filter
 	public Integer getNumberOfPages(String url) throws IOException {
 
 		Document doc = Jsoup.connect(url).get();
@@ -94,42 +91,53 @@ public class Services {
 		}
 	}
 
-	//return Object[] with lines and fileSize
-	public Object[] getFileSizeAndLinesOfCode(String urlArquivo) throws IOException {
+	// return Object[] with lines and fileSize
+	public Object[] getFileSizeAndLinesOfCode(String urlArquivo) {
 
-		Document doc = Jsoup.connect(urlArquivo).get();
-		
-		System.out.println((urlArquivo));
+		try {
+			Document doc = Jsoup.connect(urlArquivo).get();
 
-		Elements newsHeadlines = doc
-				.select("div.text-mono.f6.flex-auto.pr-3.flex-order-2.flex-md-order-1.mt-2.mt-md-0");
+			Elements newsHeadlines = doc
+					.select("div.text-mono.f6.flex-auto.pr-3.flex-order-2.flex-md-order-1.mt-2.mt-md-0");
 
-		String linhasEKb = null;
+			String linhasEKb = null;
 
-		Integer numeroDeLinhas = 0;
-		String tamanho = null;
+			Integer numeroDeLinhas = 0;
+			String tamanho = null;
 
-		Object[] array = { numeroDeLinhas, tamanho };
+			Object[] array = { numeroDeLinhas, tamanho };
 
-		for (Element headline : newsHeadlines) {
-			linhasEKb = headline.ownText();
+			for (Element headline : newsHeadlines) {
+				linhasEKb = headline.ownText();
+			}
+
+			String[] nova1 = linhasEKb.split(" ");
+			String[] nova2 = linhasEKb.split("sloc");
+
+			numeroDeLinhas = Integer.parseInt(nova1[0]);
+			tamanho = nova2[1].substring(2);
+
+			array[0] = numeroDeLinhas;
+			array[1] = tamanho;
+
+			return array;
+		} catch (Exception e) {
+
+			try {
+				// Time to wait GibHub's error (429 Too many requests)
+				System.out.println("Waiting 30 Seconds");
+				TimeUnit.SECONDS.sleep(30);
+			} catch (InterruptedException ie) {
+				Thread.currentThread().interrupt();
+			}
+
+			getFileSizeAndLinesOfCode(urlArquivo);
 		}
 
-		String[] nova1 = linhasEKb.split(" ");
-		String[] nova2 = linhasEKb.split("sloc");
-
-		numeroDeLinhas = Integer.parseInt(nova1[0]);
-		tamanho = nova2[1].substring(2);
-
-		array[0] = numeroDeLinhas;
-		array[1] = tamanho;
-
-		return array;
-
+		return null;
 	}
 
-	
-	//Sum  file List<String> in Kb
+	// Sum file List<String> in Kb
 	public Float sumFileSize(List<String> lista) {
 
 		List<Double> kb = new ArrayList<Double>();
@@ -154,14 +162,12 @@ public class Services {
 
 	}
 
-	//Sum lines
+	// Sum lines
 	public Integer sumLines(List<Integer> lista) {
 
 		Integer sum = lista.stream().collect(Collectors.summingInt(Integer::intValue));
 
 		return sum;
 	}
-
-	
 
 }
