@@ -28,12 +28,17 @@ public class Create {
 
 			tamanhoLinhas = new ArrayList<Integer>();
 			tamanhoArquivos = new ArrayList<String>();
+			String arquivo = null;
 
 			List<String> filesUrl = (serv.findFilesPage(urlLinguagem, serv.getNumberOfPages(urlLinguagem), 1));
 			Object[] sizeAndLines = null;
 
 			for (String file : filesUrl) {
+				
 				try {
+					if(file == arquivo) {
+						continue;
+					}
 					sizeAndLines = serv.getFileSizeAndLinesOfCode(file);					
 				}catch (Exception e) {
 					try {
@@ -49,7 +54,7 @@ public class Create {
 				tamanhoLinhas.add((Integer) sizeAndLines[0]);
 				tamanhoArquivos.add((String) sizeAndLines[1]);
 				
-				filesUrl.remove(file);
+				arquivo = file;
 				
 			}
 			
