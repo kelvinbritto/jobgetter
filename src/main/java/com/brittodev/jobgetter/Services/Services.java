@@ -79,16 +79,33 @@ public class Services {
 	// Get how many pages has on the language filter
 	public Integer getNumberOfPages(String url) throws IOException {
 
-		Document doc = Jsoup.connect(url).get();
-
+		Integer i = 0;
 		try {
-			Elements em = doc.select("em.current");
 
-			return Integer.parseInt(em.attr("data-total-pages"));
+			Document doc = Jsoup.connect(url).get();
+
+			try {
+				Elements em = doc.select("em.current");
+
+				i = Integer.parseInt(em.attr("data-total-pages"));
+
+				return i;
+
+			} catch (Exception e) {
+				return 1;
+			}
 
 		} catch (Exception e) {
-			return 1;
+			try {
+				// Time to wait GibHub's error (429 Too many requests)
+				System.out.println("Waiting 30 Seconds");
+				TimeUnit.SECONDS.sleep(30);
+			} catch (InterruptedException ie) {
+				Thread.currentThread().interrupt();
+			}
+			getNumberOfPages(url);
 		}
+		return i;
 	}
 
 	// return Object[] with lines and fileSize
@@ -124,16 +141,20 @@ public class Services {
 		} catch (Exception e) {
 
 			try {
+
 				// Time to wait GibHub's error (429 Too many requests)
 				System.out.println("Waiting 30 Seconds");
 				TimeUnit.SECONDS.sleep(30);
+
 			} catch (InterruptedException ie) {
+
 				Thread.currentThread().interrupt();
+
 			}
 
 			getFileSizeAndLinesOfCode(urlArquivo);
-
 		}
+
 		return array;
 	}
 
