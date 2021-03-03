@@ -11,7 +11,7 @@ import com.brittodev.jobgetter.model.RepositoryFiles;
 public class Create {
 
 	Services serv = new Services();
-	
+
 	public final RepositoryFiles create(String urlProjeto) throws IOException {
 
 		List<Integer> tamanhoLinhas = new ArrayList<Integer>();
@@ -34,8 +34,8 @@ public class Create {
 
 			for (String file : filesUrl) {
 				try {
-					sizeAndLines = serv.getFileSizeAndLinesOfCode(file);					
-				}catch (Exception e) {
+					sizeAndLines = serv.getFileSizeAndLinesOfCode(file);
+				} catch (Exception e) {
 					try {
 						// Time to wait GibHub's error (429 Too many requests)
 						System.out.println("Waiting 30 Seconds");
@@ -45,18 +45,21 @@ public class Create {
 					}
 					sizeAndLines = serv.getFileSizeAndLinesOfCode(file);
 				}
-				
-				if(sizeAndLines[0] == tamanhoArquivos.get(tamanhoArquivos.size()-1)) {
-					System.out.println("igual");
+
+				if (tamanhoArquivos.size() > 0) {
+					if (sizeAndLines[0] == tamanhoArquivos.get(tamanhoArquivos.size() - 1)) {
+						System.out.println("igual");
+					} else {
+						tamanhoLinhas.add((Integer) sizeAndLines[0]);
+						tamanhoArquivos.add((String) sizeAndLines[1]);
+					}
 				}else {
 					tamanhoLinhas.add((Integer) sizeAndLines[0]);
 					tamanhoArquivos.add((String) sizeAndLines[1]);
 				}
-						
-				
-				
+
 			}
-			
+
 			Language linguagem = new Language();
 			// Get Language Name Extension
 			String[] file = filesUrl.get(0).split("/");
