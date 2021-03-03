@@ -53,7 +53,10 @@ public class Services {
 				for (Element headline : newsHeadlines) {
 
 					array.add("https://github.com" + headline.select("a").attr("href"));
+					System.out.println("https://github.com" + headline.select("a").attr("href"));
 				}
+				
+				System.out.println("Pagina" + n);
 
 				n++;
 			}
@@ -67,6 +70,7 @@ public class Services {
 			} catch (InterruptedException ie) {
 			    Thread.currentThread().interrupt();
 			}
+			
 			findFilesPage(url, numeroDePaginas, n);			
 		}
 		return array;
