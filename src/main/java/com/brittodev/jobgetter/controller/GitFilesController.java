@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.brittodev.jobgetter.model.Err;
 import com.brittodev.jobgetter.model.RepositoryFiles;
 import com.brittodev.jobgetter.model.RepositoryFilesService;
 
@@ -24,16 +23,11 @@ public class GitFilesController {
 	@GetMapping
 	@Cacheable(value = "repository")
 	public ResponseEntity<RepositoryFiles> getProjectGit(String url) {
-		
-		if(url == "") {
-			System.out.println("BAD.REQUEST -> " + url);
-			return ResponseEntity.badRequest().build();
-		}
-		
-		System.out.println("Received -> " + url);
-		
+	
+	
 		RepositoryFiles repositoryFiles = new RepositoryFiles();
-
+		System.out.println("Received -> " + url);
+	
 		try {
 			repositoryFiles = repository.getRepository(url);
 		} catch (Exception e) {
@@ -43,5 +37,5 @@ public class GitFilesController {
 		System.out.println("Send -> " + url);
 		return ResponseEntity.ok(repositoryFiles);
 	}
-
+	
 }

@@ -62,7 +62,8 @@ public class Services {
 			
 			try {
 			    //Time to wait GibHub's error (429 Too many requests)
-				TimeUnit.SECONDS.sleep(10);
+				TimeUnit.SECONDS.sleep(30);
+				System.out.println("Waiting 30 Seconds");
 			} catch (InterruptedException ie) {
 			    Thread.currentThread().interrupt();
 			}
